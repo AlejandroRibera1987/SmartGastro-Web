@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <h2>SmartGastro</h2>
+
+        <nav>
+            <a href="{{ url_for('views.dashboard') }}">Dashboard</a>
+            <a href="#">Productos</a>
+            <a href="#">Ventas</a>
+            <a class="logout" href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <h1>Dashboard</h1>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Productos</h3>
+                <p>0</p>
+            </div>
+
+            <div class="card">
+                <h3>Ventas</h3>
+                <p>0</p>
+            </div>
+
+            <div class="card">
+                <h3>Stock Bajo</h3>
+                <p>0</p>
+            </div>
+        </div>
+    </main>
+
+</div>
+
+{% endblock %}

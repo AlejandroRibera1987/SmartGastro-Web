@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div class="login-container">
+
+    <div class="login-card">
+
+
+
+        <img class="logo-login" src="{{ url_for('static', filename='img/logo-smartgastro.png') }}"
+            alt="Logo SmartGastro">
+
+        <form method="POST">
+
+
+            <h3>Iniciar Sesión</h3>
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for msg in messages %}
+            <p class="error">{{ msg }}</p>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <input type="text" name="usuario" placeholder="Usuario" required>
+
+            <input type="password" name="password" placeholder="Contraseña" required>
+
+            <button type="submit">
+                Ingresar
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,169 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-y: hidden;
+}
+
+/* LOGIN */
+
+.login-container {
+    background-image: url('../img/fondo-login.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    padding-right: 120px;
+}
+
+.login-card {
+    width: 400px;
+    padding: 40px;
+    border-radius: 15px;
+    background: rgba(121, 114, 114, 0.35);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, .25);
+}
+
+
+.login-card h3 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo-login {
+    width: 350px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.login-card h3 {
+    font-size: 2rem;
+    color: aliceblue;
+    letter-spacing: 5px;
+    text-shadow: 5px 5px 10px rgba(36, 36, 36, 0.32);
+}
+
+.login-card form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-card input {
+    margin-bottom: 20px;
+    background-color: #dcdcdc;
+    font-size: 1.3rem;
+    padding-left: 10px;
+    height: 45px;
+    border-radius: 15px;
+}
+
+.login-card button {
+    height: 50px;
+    border-radius: 15px;
+    font-size: 1.3rem;
+    background-color: #1f2937;
+    color: white;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 3px;
+}
+
+.login-card button:hover {
+    background-color: #0f1419;
+}
+
+.login-card .error {
+    color: rgb(87, 1, 1);
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 15px;
+    text-shadow: 5px 5px 10px rgba(255, 255, 255, 0.32);
+}
+
+/* DASHBOARD */
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+    background: #f4f6f9;
+}
+
+.sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background: #1f2937;
+    color: white;
+    padding: 30px 20px;
+    flex-shrink: 0;
+}
+
+.sidebar h2 {
+    margin-bottom: 35px;
+    font-size: 24px;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.sidebar nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.sidebar nav a:hover {
+    color: #2fb344;
+}
+
+.sidebar .logout {
+    margin-top: 20px;
+    color: #ffb4b4;
+}
+
+.main-content {
+    flex: 1;
+    padding: 40px;
+}
+
+.main-content h1 {
+    margin-bottom: 25px;
+    font-size: 34px;
+}
+
+.cards {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 250px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
+}
+
+.card h3 {
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.card p {
+    font-size: 34px;
+    font-weight: bold;
+}
