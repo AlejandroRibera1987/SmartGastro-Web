@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Producto{% endblock %}
+
+{% block content %}
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <h2>SmartGastro</h2>
+
+        <nav>
+            <a href="{{ url_for('views.dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('views.productos') }}">Productos</a>
+            <a href="#">Ventas</a>
+            <a class="logout" href="{{ url_for('auth.logout') }}">
+                Cerrar sesión
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <div class="form-card">
+
+            <h1>Editar Producto</h1>
+
+            <form id="formEditar">
+
+                <input type="text" id="nombre" required>
+
+                <input type="text" id="descripcion">
+
+                <input type="number" id="precio" required>
+
+                <input type="number" id="stock" required>
+
+                <select id="activo">
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+
+                <button type="submit">
+                    Guardar cambios
+                </button>
+
+            </form>
+
+            <br>
+
+            <a href="{{ url_for('views.productos') }}" class="btn-volver">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </a>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+
+    const productoId = {{ producto_id }};
+
+    async function cargarProducto() {
+
+        const response = await fetch('/api/productos');
+
+        const result = await response.json();
+
+        const producto = result.productos.find(
+            p => p.id === productoId
+        );
+
+        if (!producto) {
+            alert("Producto no encontrado");
+            return;
+        }
+
+        document.getElementById("nombre").value = producto.nombre;
+        document.getElementById("descripcion").value = producto.descripcion || "";
+        document.getElementById("precio").value = producto.precio;
+        document.getElementById("stock").value = producto.stock;
+        document.getElementById("activo").value =
+            producto.activo ? "true" : "false";
+    }
+
+    document
+        .getElementById("formEditar")
+        .addEventListener("submit", async function (e) {
+
+            e.preventDefault();
+
+            const data = {
+                nombre: document.getElementById("nombre").value,
+                descripcion: document.getElementById("descripcion").value,
+                precio: document.getElementById("precio").value,
+                stock: document.getElementById("stock").value,
+                activo: document.getElementById("activo").value === "true"
+            };
+
+            const response = await fetch(
+                `/api/productos/${productoId}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                }
+            );
+
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.href = "/productos";
+            } else {
+                alert(result.message);
+            }
+        });
+
+    cargarProducto();
+
+</script>
+
+{% endblock %}

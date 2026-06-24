@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <h2>SmartGastro</h2>
+
+        <nav>
+            <a href="{{ url_for('views.dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('views.productos') }}">Productos</a>
+            <a href="#">Ventas</a>
+            <a class="logout" href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <h1>Productos</h1>
+
+        <div class="form-card">
+            <h2>Cargar producto</h2>
+
+            <form id="formProducto">
+                <input type="text" id="nombre" placeholder="Nombre del producto" required>
+                <input type="text" id="descripcion" placeholder="Descripción">
+                <input type="number" id="precio" placeholder="Precio" required>
+                <input type="number" id="stock" placeholder="Stock" required>
+
+                <select id="activo">
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+
+                <button type="submit">Guardar producto</button>
+            </form>
+
+            <p id="mensaje"></p>
+        </div>
+
+        <div class="table-card">
+            <h2>Listado de productos</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tablaProductos"></tbody>
+            </table>
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+    const form = document.getElementById("formProducto");
+    const mensaje = document.getElementById("mensaje");
+    const tabla = document.getElementById("tablaProductos");
+
+
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const data = {
+            nombre: document.getElementById("nombre").value,
+            descripcion: document.getElementById("descripcion").value,
+            precio: document.getElementById("precio").value,
+            stock: document.getElementById("stock").value,
+            activo: document.getElementById("activo").value === "true"
+        };
+
+        let url = "/api/productos";
+        let metodo = "POST";
+
+        const response = await fetch(url, {
+            method: metodo,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            mensaje.innerText = result.message;
+            mensaje.style.color = "green";
+
+            form.reset();
+            document.getElementById("activo").value = "true";
+
+            productoEditandoId = null;
+
+            document.querySelector(".form-card h2").innerText = "Cargar producto";
+            document.querySelector(".form-card button").innerText = "Guardar producto";
+
+            cargarProductos();
+        } else {
+            mensaje.innerText = result.message || "Error al guardar producto";
+            mensaje.style.color = "red";
+        }
+    });
+
+
+    async function cargarProductos() {
+        const response = await fetch("/api/productos");
+        const result = await response.json();
+
+        tabla.innerHTML = "";
+
+        result.productos.forEach(producto => {
+            const estadoTexto = producto.activo ? "Activo" : "Inactivo";
+            const estadoClase = producto.activo ? "estado-activo" : "estado-inactivo";
+
+            tabla.innerHTML += `
+            <tr>
+                <td>${producto.nombre}</td>
+                <td>${producto.descripcion || ""}</td>
+                <td>$${producto.precio}</td>
+                <td>${producto.stock}</td>
+                <td>
+                    <span class="${estadoClase}">
+                        ${estadoTexto}
+                    </span>
+                </td>
+                <td>
+                    <a class="btn-edit" href="/productos/editar/${producto.id}">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </a>
+
+                    <button class="btn-delete" onclick="eliminarProducto(${producto.id})">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+        });
+    }
+
+    async function eliminarProducto(id) {
+        const confirmar = confirm("¿Seguro que querés eliminar este producto definitivamente?");
+
+        if (!confirmar) {
+            return;
+        }
+
+        const response = await fetch(`/api/productos/${id}`, {
+            method: "DELETE"
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            mensaje.innerText = result.message;
+            mensaje.style.color = "green";
+            cargarProductos();
+        } else {
+            mensaje.innerText = result.message || "Error al eliminar producto";
+            mensaje.style.color = "red";
+        }
+    }
+
+    cargarProductos();
+</script>
+
+{% endblock %}
