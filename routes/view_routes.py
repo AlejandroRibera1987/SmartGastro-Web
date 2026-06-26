@@ -27,3 +27,10 @@ def editar_producto(producto_id):
         "editar_producto.html",
         producto_id=producto_id
     )
+
+@view_bp.route("/ventas")
+def ventas():
+    if "usuario_id" not in session:
+        return redirect(url_for("auth.login"))
+
+    return render_template("ventas.html")

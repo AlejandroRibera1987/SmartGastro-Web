@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Ventas{% endblock %}
+
+{% block content %}
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <h2>SmartGastro</h2>
+
+        <nav>
+            <a href="{{ url_for('views.dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('views.productos') }}">Productos</a>
+            <a href="{{ url_for('views.ventas') }}">Ventas</a>
+            <a class="logout" href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <h1>Ventas</h1>
+
+        <div class="form-card">
+            <h2>Registrar venta</h2>
+
+            <form id="formVenta">
+                <select id="producto_id" required>
+                    <option value="">Seleccionar producto</option>
+                </select>
+
+                <input type="number" id="cantidad" placeholder="Cantidad" min="1" required>
+
+                <button type="submit">Registrar venta</button>
+            </form>
+
+            <p id="mensaje"></p>
+        </div>
+
+        <div class="table-card">
+            <h2>Listado de ventas</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Total</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tablaVentas"></tbody>
+            </table>
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+    const formVenta = document.getElementById("formVenta");
+    const selectProducto = document.getElementById("producto_id");
+    const cantidadInput = document.getElementById("cantidad");
+    const mensaje = document.getElementById("mensaje");
+    const tablaVentas = document.getElementById("tablaVentas");
+
+    async function cargarProductos() {
+        const response = await fetch("/api/productos");
+        const result = await response.json();
+
+        selectProducto.innerHTML = '<option value="">Seleccionar producto</option>';
+
+        result.productos.forEach(producto => {
+            if (producto.activo && producto.stock > 0) {
+                selectProducto.innerHTML += `
+                <option value="${producto.id}">
+                    ${producto.nombre} - Stock: ${producto.stock} - $${producto.precio}
+                </option>
+            `;
+            }
+        });
+    }
+
+    async function cargarVentas() {
+        const response = await fetch("/api/ventas");
+        const result = await response.json();
+
+        tablaVentas.innerHTML = "";
+
+        result.ventas.forEach(venta => {
+            tablaVentas.innerHTML += `
+            <tr>
+                <td>${venta.producto}</td>
+                <td>${venta.cantidad}</td>
+                <td>$${venta.precio_unitario}</td>
+                <td>$${venta.total}</td>
+                <td>${venta.fecha}</td>
+            </tr>
+        `;
+        });
+    }
+
+    formVenta.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const data = {
+            producto_id: selectProducto.value,
+            cantidad: cantidadInput.value
+        };
+
+        const response = await fetch("/api/ventas", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            mensaje.innerText = result.message;
+            mensaje.style.color = "green";
+
+            formVenta.reset();
+
+            cargarProductos();
+            cargarVentas();
+        } else {
+            mensaje.innerText = result.message || "Error al registrar venta";
+            mensaje.style.color = "red";
+        }
+    });
+
+    cargarProductos();
+    cargarVentas();
+</script>
+
+{% endblock %}

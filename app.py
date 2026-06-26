@@ -5,10 +5,12 @@ from utils.security import bcrypt, hash_password
 from flask import redirect, url_for, session
 from models.usuario import Usuario
 from models.producto import Producto
+from models.venta import Venta
 
 from routes.auth_routes import auth_bp
 from routes.view_routes import view_bp
 from routes.producto_routes import producto_bp
+from routes.venta_routes import venta_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -19,6 +21,7 @@ bcrypt.init_app(app)
 app.register_blueprint(auth_bp, url_prefix="/api/auth")
 app.register_blueprint(view_bp)
 app.register_blueprint(producto_bp)
+app.register_blueprint(venta_bp)
 
 with app.app_context():
     db.create_all()

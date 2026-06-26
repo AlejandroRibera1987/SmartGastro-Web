@@ -1,12 +1,20 @@
 from functools import wraps
-from flask import session, jsonify
+from flask import session, jsonify, request
 from utils.security import verificar_token
 
 def api_login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
 
-        token = session.get("api_token")
+        token = None
+
+        auth_header = request.headers.get("Authorization")
+
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
+
+        if not token:
+            token = session.get("api_token")
 
         if not token:
             return jsonify({
