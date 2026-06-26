@@ -21,7 +21,7 @@ def generar_token(usuario):
 
     token = jwt.encode(
         payload,
-        current_app.config["SECRET_KEY"],
+        current_app.config["JWT_SECRET_KEY"],
         algorithm="HS256"
     )
 
@@ -31,7 +31,7 @@ def verificar_token(token):
     try:
         data = jwt.decode(
             token,
-            current_app.config["SECRET_KEY"],
+            current_app.config["JWT_SECRET_KEY"],
             algorithms=["HS256"]
         )
         return data

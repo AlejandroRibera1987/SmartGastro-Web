@@ -1,7 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash, jsonify
 from models.usuario import Usuario
-from utils.security import verify_password
+from utils.security import verify_password, generar_token
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -35,3 +34,37 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for("auth.login"))
+
+@auth_bp.route("/token", methods=["POST"])
+def api_login_token():
+
+    data = request.get_json()
+
+    usuario = data.get("usuario")
+    password = data.get("password")
+
+    user = Usuario.query.filter_by(
+        usuario=usuario
+    ).first()
+
+    if not user:
+        return jsonify({
+            "success": False,
+            "message": "Usuario incorrecto"
+        }), 401
+
+    if not verify_password(
+        password,
+        user.password_hash
+    ):
+        return jsonify({
+            "success": False,
+            "message": "Contraseña incorrecta"
+        }), 401
+
+    token = generar_token(user)
+
+    return jsonify({
+        "success": True,
+        "token": token
+    })
