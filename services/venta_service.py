@@ -25,22 +25,27 @@ def registrar_venta(data):
     if producto.stock < cantidad:
         return None, "Stock insuficiente"
 
-    precio_unitario = producto.precio
-    total = precio_unitario * cantidad
+    try:
+        precio_unitario = producto.precio
+        total = precio_unitario * cantidad
 
-    venta = Venta(
-        producto_id=producto.id,
-        cantidad=cantidad,
-        precio_unitario=precio_unitario,
-        total=total
-    )
+        venta = Venta(
+            producto_id=producto.id,
+            cantidad=cantidad,
+            precio_unitario=precio_unitario,
+            total=total
+        )
 
-    producto.stock -= cantidad
+        producto.stock -= cantidad
 
-    db.session.add(venta)
-    db.session.commit()
+        db.session.add(venta)
+        db.session.commit()
 
-    return venta, None
+        return venta, None
+
+    except Exception:
+        db.session.rollback()
+        return None, "Error al registrar la venta"
 
 
 def listar_ventas():
