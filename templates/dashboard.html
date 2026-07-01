@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}SmartGastro Web - Dashboard{% endblock %}
 
 {% block content %}
 
@@ -18,26 +18,162 @@
     </aside>
 
     <main class="main-content">
-        <h1>Dashboard</h1>
-
-        <div class="cards">
-            <div class="card">
-                <h3>Productos</h3>
-                <p>0</p>
+        <div class="dashboard-header">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Bienvenido, {{ session["usuario"] }}. Resumen general de SmartGastro.</p>
             </div>
 
-            <div class="card">
-                <h3>Ventas</h3>
-                <p>0</p>
-            </div>
-
-            <div class="card">
-                <h3>Stock Bajo</h3>
-                <p>0</p>
+            <div class="dashboard-badge">
+                <i class="fa-solid fa-burger"></i>
+                Foodtruck activo
             </div>
         </div>
+
+        <div class="cards dashboard-cards">
+
+            <div class="card stat-card">
+                <div class="stat-icon green">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+
+                <div>
+                    <h3>Productos</h3>
+                    <p>0</p>
+                </div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-icon blue">
+                    <i class="fa-solid fa-cash-register"></i>
+                </div>
+
+                <div>
+                    <h3>Ventas</h3>
+                    <p>0</p>
+                </div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-icon red">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+
+                <div>
+                    <h3>Stock Bajo</h3>
+                    <p>0</p>
+                </div>
+            </div>
+
+        </div>
+        <section class="weather-section">
+            <div class="weather-card">
+                <div class="weather-header">
+                    <div>
+                        <h2>Clima actual</h2>
+                        <p>Alerta para la producción del foodtruck</p>
+                    </div>
+
+                    <div class="weather-icon">
+                        <i id="weatherIcon" class="fa-solid fa-cloud-sun"></i>
+                    </div>
+                </div>
+
+                <div id="climaInfo" class="weather-content">
+                    Cargando información del clima...
+                </div>
+            </div>
+        </section>
     </main>
 
 </div>
+
+<script>
+    async function cargarClima() {
+        const response = await fetch("/api/clima");
+        const result = await response.json();
+
+        const div = document.getElementById("climaInfo");
+        const icon = document.getElementById("weatherIcon");
+
+        if (!result.success) {
+            div.innerHTML = `
+            <div class="weather-alert danger">
+                No se pudo obtener la información del clima.
+            </div>
+        `;
+            return;
+        }
+
+        const clima = result.clima;
+        const condicion = clima.condicion.toLowerCase();
+
+        if (condicion === "clear") {
+            icon.className = "fa-solid fa-sun";
+            icon.style.color = "#f59e0b";
+        } else if (condicion === "clouds") {
+            icon.className = "fa-solid fa-cloud";
+            icon.style.color = "#6b7280";
+        } else if (condicion === "rain" || condicion === "drizzle") {
+            icon.className = "fa-solid fa-cloud-rain";
+            icon.style.color = "#2563eb";
+        } else if (condicion === "thunderstorm") {
+            icon.className = "fa-solid fa-cloud-bolt";
+            icon.style.color = "#7c3aed";
+        } else if (condicion === "snow") {
+            icon.className = "fa-solid fa-snowflake";
+            icon.style.color = "#38bdf8";
+        } else if (
+            condicion === "mist" ||
+            condicion === "fog" ||
+            condicion === "haze"
+        ) {
+            icon.className = "fa-solid fa-smog";
+            icon.style.color = "#64748b";
+        } else {
+            icon.className = "fa-solid fa-cloud-sun";
+            icon.style.color = "#10b981";
+        }
+
+        let alerta = "";
+
+        if (clima.hay_lluvia) {
+            alerta = `
+            <div class="weather-alert danger">
+                Se pronostica lluvia. Se recomienda reducir la producción.
+            </div>
+        `;
+        } else {
+            alerta = `
+            <div class="weather-alert success">
+                No hay lluvias pronosticadas. Producción habitual recomendada.
+            </div>
+        `;
+        }
+
+        div.innerHTML = `
+        <div class="weather-grid">
+            <div>
+                <span>Ciudad</span>
+                <strong>${clima.ciudad}</strong>
+            </div>
+
+            <div>
+                <span>Temperatura</span>
+                <strong>${clima.temperatura} °C</strong>
+            </div>
+
+            <div>
+                <span>Estado</span>
+                <strong>${clima.descripcion}</strong>
+            </div>
+        </div>
+
+        ${alerta}
+    `;
+    }
+
+    cargarClima();
+</script>
 
 {% endblock %}

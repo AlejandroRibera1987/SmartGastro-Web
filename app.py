@@ -11,6 +11,7 @@ from routes.auth_routes import auth_bp
 from routes.view_routes import view_bp
 from routes.producto_routes import producto_bp
 from routes.venta_routes import venta_bp
+from routes.clima_routes import clima_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -22,6 +23,7 @@ app.register_blueprint(auth_bp, url_prefix="/api/auth")
 app.register_blueprint(view_bp)
 app.register_blueprint(producto_bp)
 app.register_blueprint(venta_bp)
+app.register_blueprint(clima_bp)
 
 with app.app_context():
     db.create_all()
