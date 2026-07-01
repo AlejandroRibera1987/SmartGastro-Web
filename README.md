@@ -219,33 +219,33 @@ API OpenWeather
 
 ## Login
 
-![Login](static/img/readme/login.png)
+![Login](static/img/readme/Login.png)
 
 ## Dashboard
 
-![Dashboard](static/img/readme/dashboard.png)
+![Dashboard](static/img/readme/Dashboard.png)
 
 ## Productos
 
-![Productos](static/img/readme/productos.png)
+![Productos](static/img/readme/Productos.png)
 
 ## Ventas
 
-![Ventas](static/img/readme/ventas.png)
+![Ventas](static/img/readme/Ventas.png)
 
 # Pruebas en Postman
 
 ## Generación de token JWT
 
-![Postman Token](static/img/readme/postman-token.png)
+![Postman Token](static/img/readme/Postman-token.png)
 
 ## Listado de productos desde API
 
-![Postman Productos](static/img/readme/postman-productos.png)
+![Postman Productos](static/img/readme/Postman-productos.png)
 
 ## API de clima
 
-![Postman Clima](static/img/readme/postman-clima.png)
+![Postman Clima](static/img/readme/Postman-clima.png)
 
 
 # Metodología de desarrollo
@@ -257,7 +257,7 @@ Las funcionalidades implementadas corresponden a Historias de Usuario definidas 
 Tablero Kanban:
 https://trello.com/invite/b/69f9fc7d86946c623d2d56a7/ATTI20f0b7a3d8c6ad7fbea461b237cc96e09C672AB6/smartgastro
 
-![Kanban](static/img/readme/kanban.png)
+![Kanban](static/img/readme/Kanban.png)
 
 #  Integrantes
 
